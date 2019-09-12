@@ -73,8 +73,9 @@
 <script>
     import {validationMixin} from 'vuelidate'
     import {required, email} from 'vuelidate/lib/validators'
-    import AuthService from "../service/auth_service";
-    import UserService from "../service/user_service";
+    import AuthService from "../../service/auth_service";
+    import UserService from "../../service/user_service";
+    import User from "../../entity/user";
 
     export default {
         $_veeValidate: {
@@ -141,6 +142,15 @@
                 this.dialog = false;
                 UserService.getUser(this.email,this.password).then(request => {
                     console.log(request)
+                    let user = new User({
+                        username: request.data.username,
+                        email: request.data.email,
+                        role: request.data.role,
+                        id: request.data.id
+                    })
+                    console.log(user)
+                    this.usernameTitle = user.username
+                    localStorage.setItem('user',user)
                 })
             },
 
