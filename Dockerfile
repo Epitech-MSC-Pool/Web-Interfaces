@@ -1,19 +1,15 @@
 FROM node:10
 
-# Create app directory
-WORKDIR /usr/src/app
+COPY ./ /app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package*.json ./
+WORKDIR /app
 
-RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
+RUN npm install && npm run build
 
-# Bundle app source
-COPY . .
+FROM nginx
 
-EXPOSE 8080
-CMD [ "npm", "run","serve" ]
+RUN mkdir /app
+
+COPY --from=0 /app/dist /app
+
+COPY nginx.conf /etc/nginx/nginx.conf
